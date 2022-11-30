@@ -171,6 +171,25 @@ function kickKano(){
 
 }
 
+function oneTwoKano(){
+  frameCount++;
+  if (frameCount < 60) {
+    window.requestAnimationFrame(oneTwoKano);
+    return;
+  }
+  frameCount = 0;
+  
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawFrame(kanoOneTwo, 64,kanoOneTwoLoop[currentLoopIndex], 0, 0, 0);
+
+  currentLoopIndex ++;
+  if (currentLoopIndex >= kanoOneTwoLoop.length) {
+    currentLoopIndex = 0;
+  }
+  window.requestAnimationFrame(oneTwoKano);
+
+}
+
 function runKano(){
   frameCount++;
   if (frameCount < 120) {
@@ -213,5 +232,5 @@ function walkKano(){
 
 function init() {
   //drawFrame(0, 0, 0, 0);
-  window.requestAnimationFrame(walkKano);
+  window.requestAnimationFrame(oneTwoKano);
 }
