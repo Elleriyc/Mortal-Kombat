@@ -68,9 +68,32 @@ const subWalkingLoop = [0,1,2,3,4,5,6,7];
 
 let currentLoopIndex = 0;
 let frameCount = 0;
+let x = 0;
 
-function drawFrame(img, largeur, frameX, frameY,canvasX,canvasY){
-    ctx.drawImage(img, frameX * largeur, frameY * hauteur, largeur, hauteur, canvasX, canvasY, scale * largeur, scaledHeight);
+let move = false;
+
+window.addEventListener("keydown", (event) => {
+     if (event.defaultPrevented) {
+       return; // Do nothing if the event was already processed
+     }
+     switch (event.key){
+          case "ArrowRight":
+               move = true;
+               x = x + 3;
+               
+               break;
+          case "ArrowLeft":
+               move = true;
+               x = x - 3;
+               break;
+     default:
+          return;
+     }
+     event.preventDefault();
+},true);
+
+function drawFrame(img, largeur, frameX, frameY/*canvasX*/,canvasY){
+    ctx.drawImage(img, frameX * largeur, frameY * hauteur, largeur, hauteur, /*canvas*/x, canvasY, scale * largeur, scaledHeight);
 }
 
 function hurtSubzero(){
@@ -95,6 +118,8 @@ function idleSubzero(){
   frameCount++;
   if (frameCount < 120) {
     window.requestAnimationFrame(idleSubzero);
+      ctx.font = '48px serif';
+      ctx.fillText(x, 50, 300);
     return;
   }
   frameCount = 0;
@@ -187,12 +212,15 @@ function walkSubzero(){
   frameCount++;
   if (frameCount < 120) {
     window.requestAnimationFrame(walkSubzero);
+      ctx.font = '48px serif';
+      ctx.fillText(x, 50, 300);
     return;
   }
   frameCount = 0;
+
   
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawFrame(subWalking, 48,subWalkingLoop[currentLoopIndex], 0, 0, 0);
+  drawFrame(subWalking, 48,subWalkingLoop[currentLoopIndex], 0, 0);
 
   currentLoopIndex ++;
   if (currentLoopIndex >= subWalkingLoop.length) {
@@ -206,5 +234,11 @@ function walkSubzero(){
 
 function init() {
   //drawFrame(0, 0, 0, 0);
-  window.requestAnimationFrame(hurtSubzero);
+
+  if (x > 100){
+     window.requestAnimationFrame(walkSubzero);
+  }
+  else{
+     window.requestAnimationFrame(idleSubzero);
+  }
 }
