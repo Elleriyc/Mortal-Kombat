@@ -3,6 +3,8 @@ let ctx = canvas.getContext('2d');
 
 ctx.imageSmoothingEnabled = false;
 
+
+//chemin des spritesheets pour les animations
 let subHurt = new Image();
 subHurt.src = "/src/SubZero/Sub_hurt.png"
 
@@ -24,7 +26,7 @@ subRun.src = "/src/SubZero/Sub_Run.png"
 let subWalking = new Image();
 subWalking.src = "/src/SubZero/Sub_Walk.png"
 
-
+//chargement des spritesheets
 subHurt.onload = function() {
   init();
 };
@@ -54,10 +56,14 @@ subWalking.onload = function() {
   init();
 };
 
+//multiplicateur taille des sprites
 const scale = 2;
+// hauteur des sprites
 const hauteur = 112;
+// hauteur des sprites lors de leur affichage
 const scaledHeight = scale * hauteur;
 
+// tableaux correspondant aux nombres d animation dans chaque sprite sheet
 const subHurtLoop = [0,1,2,3,4];
 const subIdleLoop = [0,1,2,3,4,5,6,7];
 const subKamehaLoop = Array.from(Array(13).keys())
@@ -66,12 +72,16 @@ const subOneTwoLoop = [0,1,2,3,4,5];
 const subRunLoop = [0,1,2,3,4,5];
 const subWalkingLoop = [0,1,2,3,4,5,6,7];
 
+//permet de se deplacer dans le tableau des animations
 let currentLoopIndex = 0;
+// permet de changer la vitesse d animation
 let frameCount = 0;
+// position x du sprite
 let x = 0;
-
+//booleen permettant de savoir si le sprite se deplace (de base il est immobile)
 let move = false;
 
+//switch case permettant d incrementer la position du sprite et changer l etat du booleen
 window.addEventListener("keydown", (event) => {
      if (event.defaultPrevented) {
        return; // Do nothing if the event was already processed
@@ -91,11 +101,12 @@ window.addEventListener("keydown", (event) => {
      }
      event.preventDefault();
 },true);
-
+//fonction avec arguments permettant de dessiner les frames
+// la largeur de l'image est pris en argument etant donne que la largeur des sprites selon la sprite sheet sont differents
 function drawFrame(img, largeur, frameX, frameY/*canvasX*/,canvasY){
     ctx.drawImage(img, frameX * largeur, frameY * hauteur, largeur, hauteur, /*canvas*/x, canvasY, scale * largeur, scaledHeight);
 }
-
+//differentes fonctions d animations
 function hurtSubzero(){
   frameCount++;
   if (frameCount < 120) {
@@ -234,7 +245,7 @@ function walkSubzero(){
 
 function init() {
   //drawFrame(0, 0, 0, 0);
-
+  // si x est superieur a 100 l'animation de marche doit commencer sinon l'animation d'idle est celle qui s'affiche
   if (x > 100){
      window.requestAnimationFrame(walkSubzero);
   }
