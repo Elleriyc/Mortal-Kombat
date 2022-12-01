@@ -116,8 +116,9 @@ function hurtSubzero(){
   frameCount = 0;
   
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  //utilise la spritesheet subhurt se deplace dans le tableau pour chaque frame
   drawFrame( subHurt, 96, subHurtLoop[currentLoopIndex], 0, 0, 0);
-
+  // incremente les frames
   currentLoopIndex ++;
   if (currentLoopIndex >= subHurtLoop.length) {
     currentLoopIndex = 0;
