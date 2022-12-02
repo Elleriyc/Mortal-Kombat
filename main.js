@@ -91,6 +91,7 @@ function gameLoop(timestamp) {
 
           let hasMoved = false;
           let forward = true;
+          let animation = true;
 
           if (keyPresses.a) {
                x -= 10;
@@ -100,7 +101,7 @@ function gameLoop(timestamp) {
                x += 10;
                hasMoved = true;
                forward = true;
-          }
+          } 
 
           if (hasMoved && forward) {
                currentLoopIndex++;
@@ -108,23 +109,27 @@ function gameLoop(timestamp) {
                     currentLoopIndex = 0;
                }
                drawFrame(subWalking,48,subWalkingingLoop[currentLoopIndex], 0, 0);
-          }
-          if (hasMoved && !forward) {
+          } if (hasMoved && !forward) {
                if (currentLoopIndex == 0){
                     currentLoopIndex = 7;
                }
                currentLoopIndex--;
                drawFrame(subWalking,48,subWalkingingLoop[currentLoopIndex], 0, 0);
-          }
-
-          if (!hasMoved) {
+          }if (!hasMoved) {
                currentLoopIndex++;
                if (currentLoopIndex >= subRunLoop.length) {
                     currentLoopIndex = 0;
                }
-               drawFrame(kanoIdle, 48,subIdleLoop[currentLoopIndex], 0 , 0 );
+               drawFrame(subIdle, 48,subIdleLoop[currentLoopIndex], 0 , 0 );
           }
-     }
 
+          if (keyPresses.k){
+               for (currentLoopIndex = 0;currentLoopIndex <= 4; currentLoopIndex++){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    drawFrame(subKick, 80,subKickLoop[currentLoopIndex], 0 , 0 );
+               }
+          }
+     
+     }
      window.requestAnimationFrame(gameLoop);
 }
