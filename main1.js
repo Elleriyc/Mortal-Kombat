@@ -90,7 +90,6 @@ window.addEventListener("keydown", (event) => {
           case "ArrowRight":
                move = true;
                x = x + 3;
-               
                break;
           case "ArrowLeft":
                move = true;

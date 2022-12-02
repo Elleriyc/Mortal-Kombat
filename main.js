@@ -100,7 +100,7 @@ function hurtKano(){
 
 function idleKano(){
   frameCount++;
-  if (frameCount < 30) {
+  if (frameCount < 120) {
     window.requestAnimationFrame(idleKano);
     return;
   }
@@ -232,5 +232,5 @@ function walkKano(){
 
 function init() {
   //drawFrame(0, 0, 0, 0);
-  window.requestAnimationFrame(oneTwoKano);
+  window.requestAnimationFrame(walkKano);
 }
