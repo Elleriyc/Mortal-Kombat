@@ -3,234 +3,128 @@ let ctx = canvas.getContext('2d');
 
 ctx.imageSmoothingEnabled = false;
 
-let kanoHurt = new Image();
-kanoHurt.src = "/src/Kano/hurt.png"
+const SCALE = 2;
+const HEIGHT = 112;
+const SCALED_HEIGHT = SCALE * HEIGHT;
 
-let kanoIdle = new Image();
-kanoIdle.src = "/src/Kano/idle.png";
+const subHurtLoop = [0,1,2,3,4];
+const subIdleLoop = [0,1,2,3,4,5,6,7];
+const subKamehaLoop = Array.from(Array(13).keys())
+const subKickLoop = [0,1,2,3,4];
+const subOneTwoLoop = [0,1,2,3,4,5];
+const subRunLoop = [0,1,2,3,4,5];
+const subWalkingingLoop = [0,1,2,3,4,5,6,7];
 
-let kanoKameha = new Image();
-kanoKameha.src = "/src/Kano/kamehameha.png"
-
-let kanoFreezed = new Image();
-kanoFreezed.src = "/src/Kano/Kano_freezed.png"
-
-let kanoKick = new Image();
-kanoKick.src = "/src/Kano/kick.png"
-
-let kanoOneTwo = new Image();
-kanoOneTwo.src = "/src/Kano/OneTwo.png"
-
-let kanoRun = new Image();
-kanoRun.src = "/src/Kano/run.png"
-
-let kanoWalking = new Image();
-kanoWalking.src = "/src/Kano/walking-sheet.png"
-
-
-kanoHurt.onload = function() {
-  init();
-};
-
-kanoIdle.onload = function() {
-  init();
-};
-
-kanoKameha.onload = function() {
-  init();
-};
-
-kanoFreezed.onload = function() {
-  init();
-};
-
-kanoKick.onload = function() {
-  init();
-};
-
-kanoOneTwo.onload = function() {
-  init();
-};
-
-kanoRun.onload = function() {
-  init();
-};
-
-kanoWalking.onload = function() {
-  init();
-};
-
-const scale = 2;
-const hauteur = 112;
-const scaledHeight = scale * hauteur;
-
-const kanoHurtLoop = [0,1,2,3,4];
-const kanoIdleLoop = [0,1,2,3,4,5,6,7];
-const kanoKamehaLoop = Array.from(Array(20).keys())
-const kanoFreezedLoop = [0];
-const kanoKickLoop = [0,1,2,3,4];
-const kanoOneTwoLoop = [0,1,2,3,4,5];
-const kanoRunLoop = [0,1,2,3,4,5];
-const kanoWalkingLoop = [0,1,2,3,4,5,6,7];
-
+let keyPresses = {};
 let currentLoopIndex = 0;
 let frameCount = 0;
+let positionX = 0;
+let positionY = 0;
 
-function drawFrame(img, largeur, frameX, frameY,canvasX,canvasY){
-    ctx.drawImage(img, frameX * largeur, frameY * hauteur, largeur, hauteur, canvasX, canvasY, scale * largeur, scaledHeight);
+let x = 0;
+
+let subHurt = new Image();
+let subIdle = new Image();
+let subKameha = new Image();
+let subKick = new Image();
+let subOneTwo = new Image();
+let subRun = new Image();
+let subWalking = new Image();
+
+let kanoHurt = new Image();
+let kanoIdle = new Image();
+let kanoKameha = new Image();
+let kanoFreezed = new Image();
+let kanoKick = new Image();
+let kanoOneTwo = new Image();
+let kanoRun = new Image();
+let kanoWalking = new Image();
+
+var time = 0;
+var time_framerate = 100; //in milliseconds'
+
+function loadImage() {
+
+     subHurt.src = "/src/SubZero/Sub_hurt.png"
+     subIdle.src = "/src/SubZero/Sub_idle.png";
+     subKameha.src = "/src/SubZero/Sub_Kameha.png"
+     subKick.src = "/src/SubZero/Sub_kick.png"
+     subOneTwo.src = "/src/SubZero/Sub_OneTwo.png"
+     subRun.src = "/src/SubZero/Sub_Run.png"
+     subWalking.src = "/src/SubZero/Sub_Walk.png";
+
+     kanoHurt.src = "/src/Kano/hurt.png";
+     kanoIdle.src = "/src/Kano/idle.png";
+     kanoKameha.src = "/src/Kano/kamehameha.png";
+     kanoFreezed.src = "/src/Kano/Kano_freezed.png";
+     kanoKick.src = "/src/Kano/kick.png";
+     kanoOneTwo.src = "/src/Kano/OneTwo.png";
+     kanoRun.src = "/src/Kano/run.png";
+     kanoWalking.src = "/src/Kano/walking-sheet.png";
+
+     subHurt.onload = function() {
+          window.requestAnimationFrame(gameLoop);
+     }
 }
 
-function hurtKano(){
-  frameCount++;
-  if (frameCount < 30) {
-    window.requestAnimationFrame(hurtKano);
-    return;
-  }
-  frameCount = 0;
-  
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawFrame( kanoHurt, 96, kanoHurtLoop[currentLoopIndex], 0, 0, 0);
-
-  currentLoopIndex ++;
-  if (currentLoopIndex >= kanoHurtLoop.length) {
-    currentLoopIndex = 0;
-  }
-  window.requestAnimationFrame(hurtKano);
-} 
-
-function idleKano(){
-  frameCount++;
-  if (frameCount < 120) {
-    window.requestAnimationFrame(idleKano);
-    return;
-  }
-  frameCount = 0;
-  
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawFrame( kanoIdle, 48, kanoIdleLoop[currentLoopIndex], 0, 0, 0);
-
-  currentLoopIndex ++;
-  if (currentLoopIndex >= kanoIdleLoop.length) {
-    currentLoopIndex = 0;
-  }
-  window.requestAnimationFrame(idleKano);
-} 
-
-function kamehaKano(){
-  frameCount++;
-  if (frameCount < 30) {
-    window.requestAnimationFrame(kamehaKano);
-    return;
-  }
-  frameCount = 0;
-  
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawFrame( kanoKameha, 64, kanoKamehaLoop[currentLoopIndex], 0, 0, 0);
-
-  currentLoopIndex ++;
-  if (currentLoopIndex >= kanoKamehaLoop.length) {
-    currentLoopIndex = 0;
-  }
-  window.requestAnimationFrame(kamehaKano);
-} 
-
-function freezedKano(){
-  frameCount++;
-  if (frameCount < 30) {
-    window.requestAnimationFrame(freezedKano);
-    return;
-  }
-  frameCount = 0;
-  
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawFrame( kanoFreezed, 48, kanoFreezedLoop[currentLoopIndex], 0, 0, 0);
-
-  currentLoopIndex ++;
-  if (currentLoopIndex >= kanoFreezedLoop.length) {
-    currentLoopIndex = 0;
-  }
-  window.requestAnimationFrame(freezedKano);
-} 
-
-function kickKano(){
-  frameCount++;
-  if (frameCount < 30) {
-    window.requestAnimationFrame(kickKano);
-    return;
-  }
-  frameCount = 0;
-  
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawFrame(kanoKick, 80,kanoKickLoop[currentLoopIndex], 0, 0, 0);
-
-  currentLoopIndex ++;
-  if (currentLoopIndex >= kanoKickLoop.length) {
-    currentLoopIndex = 0;
-  }
-  window.requestAnimationFrame(kickKano);
-
+window.addEventListener('keydown', keyDownListener);
+function keyDownListener(event) {
+     keyPresses[event.key] = true;
 }
 
-function oneTwoKano(){
-  frameCount++;
-  if (frameCount < 60) {
-    window.requestAnimationFrame(oneTwoKano);
-    return;
-  }
-  frameCount = 0;
-  
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawFrame(kanoOneTwo, 64,kanoOneTwoLoop[currentLoopIndex], 0, 0, 0);
-
-  currentLoopIndex ++;
-  if (currentLoopIndex >= kanoOneTwoLoop.length) {
-    currentLoopIndex = 0;
-  }
-  window.requestAnimationFrame(oneTwoKano);
-
+window.addEventListener('keyup', keyUpListener);
+function keyUpListener(event) {
+     keyPresses[event.key] = false;
 }
 
-function runKano(){
-  frameCount++;
-  if (frameCount < 120) {
-    window.requestAnimationFrame(runKano);
-    return;
-  }
-  frameCount = 0;
-  
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawFrame(kanoRun, 48,kanoRunLoop[currentLoopIndex], 0, 0, 0);
-
-  currentLoopIndex ++;
-  if (currentLoopIndex >= kanoRunLoop.length) {
-    currentLoopIndex = 0;
-  }
-  window.requestAnimationFrame(runKano);
-
+function drawFrame(image, largeur, frameX, frameY,canvasY){
+     ctx.drawImage(image, frameX * largeur, frameY * HEIGHT, largeur, HEIGHT, /*canvas*/x, canvasY, SCALE * largeur, SCALED_HEIGHT);
 }
 
-function walkKano(){
-  frameCount++;
-  if (frameCount < 120) {
-    window.requestAnimationFrame(walkKano);
-    return;
-  }
-  frameCount = 0;
-  
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawFrame(kanoWalking, 48,kanoWalkingLoop[currentLoopIndex], 0, 0, 0);
+loadImage();
 
-  currentLoopIndex ++;
-  if (currentLoopIndex >= kanoWalkingLoop.length) {
-    currentLoopIndex = 0;
-  }
-  window.requestAnimationFrame(walkKano);
+function gameLoop(timestamp) {
+     if(timestamp > time + time_framerate) {
+          time = timestamp;
 
-}
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+          let hasMoved = false;
+          let forward = true;
 
+          if (keyPresses.a) {
+               x -= 10;
+               hasMoved = true;
+               forward = false;
+          } else if (keyPresses.d) {
+               x += 10;
+               hasMoved = true;
+               forward = true;
+          }
 
-function init() {
-  //drawFrame(0, 0, 0, 0);
-  window.requestAnimationFrame(walkKano);
+          if (hasMoved && forward) {
+               currentLoopIndex++;
+               if (currentLoopIndex >= subIdleLoop.length) {
+                    currentLoopIndex = 0;
+               }
+               drawFrame(subWalking,48,subWalkingingLoop[currentLoopIndex], 0, 0);
+          }
+          if (hasMoved && !forward) {
+               if (currentLoopIndex == 0){
+                    currentLoopIndex = 7;
+               }
+               currentLoopIndex--;
+               drawFrame(subWalking,48,subWalkingingLoop[currentLoopIndex], 0, 0);
+          }
+
+          if (!hasMoved) {
+               currentLoopIndex++;
+               if (currentLoopIndex >= subRunLoop.length) {
+                    currentLoopIndex = 0;
+               }
+               drawFrame(kanoIdle, 48,subIdleLoop[currentLoopIndex], 0 , 0 );
+          }
+     }
+
+     window.requestAnimationFrame(gameLoop);
 }
