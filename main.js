@@ -102,27 +102,30 @@ function gameLoop(timestamp) {
                hasMoved = true;
                forward = true;
           } 
-
+          // animation de marche en avant
           if (hasMoved && forward) {
                currentLoopIndex++;
                if (currentLoopIndex >= subIdleLoop.length) {
                     currentLoopIndex = 0;
                }
                drawFrame(subWalking,48,subWalkingingLoop[currentLoopIndex], 0, 0);
-          } if (hasMoved && !forward) {
+          }// animation de marche en arriere 
+          if (hasMoved && !forward) {
                if (currentLoopIndex == 0){
                     currentLoopIndex = 7;
                }
                currentLoopIndex--;
                drawFrame(subWalking,48,subWalkingingLoop[currentLoopIndex], 0, 0);
-          }if (!hasMoved) {
+          }
+          // animation d'idle
+          if (!hasMoved) {
                currentLoopIndex++;
                if (currentLoopIndex >= subRunLoop.length) {
                     currentLoopIndex = 0;
                }
                drawFrame(subIdle, 48,subIdleLoop[currentLoopIndex], 0 , 0 );
           }
-
+          // coup de pied
           if (keyPresses.k){
                for (currentLoopIndex = 0;currentLoopIndex <= 4; currentLoopIndex++){
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
