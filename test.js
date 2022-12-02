@@ -46,7 +46,6 @@ function loadImage() {
      subRun.src = "/src/SubZero/Sub_Run.png"
      subWalking.src = "/src/SubZero/Sub_Walk.png";
 
-
      subHurt.onload = function() {
      window.requestAnimationFrame(gameLoop);
      }
@@ -54,13 +53,8 @@ function loadImage() {
 
 let x = 0;
 
-
-
-
 var time = 0;
 var time_framerate = 100; //in milliseconds'
-
-//
 
 window.addEventListener('keydown', keyDownListener);
 function keyDownListener(event) {
@@ -71,8 +65,6 @@ window.addEventListener('keyup', keyUpListener);
 function keyUpListener(event) {
      keyPresses[event.key] = false;
 }
-
-
 
 function drawFrame(image, largeur, frameX, frameY,canvasY){
      ctx.drawImage(image, frameX * largeur, frameY * HEIGHT, largeur, HEIGHT, /*canvas*/x, canvasY, SCALE * largeur, SCALED_HEIGHT);
@@ -115,15 +107,4 @@ function gameLoop(timestamp) {
 
      window.requestAnimationFrame(gameLoop);
 }
-//setInterval(gameLoop, 2000);
-
-/*function moveCharacter(deltaX, deltaY, direction) {
-  if (positionX + deltaX > 0 && positionX + SCALED_WIDTH + deltaX < canvas.width) {
-    positionX += deltaX;
-  }
-  if (positionY + deltaY > 0 && positionY + SCALED_HEIGHT + deltaY < canvas.height) {
-    positionY += deltaY;
-  }
-  currentDirection = direction;
-}*/
 
