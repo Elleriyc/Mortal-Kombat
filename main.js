@@ -1,3 +1,5 @@
+//var SAT = require('sat');
+// import SAT from '../src/SAT.js';
 let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
 
@@ -7,16 +9,13 @@ const SCALE = 2;
 const HEIGHT = 112;
 const SCALED_HEIGHT = SCALE * HEIGHT;
 
-const subHurtLoop = [0,1,2,3,4];
-const subIdleLoop = [0,1,2,3,4,5,6,7];
-const subKamehaLoop = [0,1,2,3,4,5,6,7,8,9,10,11,12,13];//Array.from(Array(13).keys())
-const subKickLoop = [0,1,2,3,4];
-const subOneTwoLoop = [0,1,2,3,4,5];
-const subRunLoop = [0,1,2,3,4,5];
-const subWalkingingLoop = [0,1,2,3,4,5,6,7];
-
-
-const kanoKamehaLoop = Array.from(Array(20).keys())
+const subHurtLoop = [0, 1, 2, 3, 4];
+const subIdleLoop = [0, 1, 2, 3, 4, 5, 6, 7];
+const subKamehaLoop = Array.from(Array(13).keys())
+const subKickLoop = [0, 1, 2, 3, 4];
+const subOneTwoLoop = [0, 1, 2, 3, 4, 5];
+const subRunLoop = [0, 1, 2, 3, 4, 5];
+const subWalkingingLoop = [0, 1, 2, 3, 4, 5, 6, 7];
 
 let keyPresses = {};
 let currentLoopIndex = 0;
@@ -44,7 +43,16 @@ let kanoRun = new Image();
 let kanoWalking = new Image();
 
 var time = 0;
-var time_framerate = 1000; //in milliseconds'
+var time_framerate = 100; //in milliseconds'
+
+var V = SAT.Vector; // SubZero
+var B = SAT.Box; // Kano
+
+var box1 = new B(new V(0, 0), 100, 100).toPolygon();
+var box2 = new B(new V(0, 0), 100, 100).toPolygon();
+var response = new SAT.Response();
+var collided = SAT.testPolygonPolygon(box1, box2,response);
+console.log(collided);
 
 function loadImage() {
 
@@ -65,7 +73,7 @@ function loadImage() {
      kanoRun.src = "/src/Kano/run.png";
      kanoWalking.src = "/src/Kano/walking-sheet.png";
 
-     subHurt.onload = function() {
+     subHurt.onload = function () {
           window.requestAnimationFrame(gameLoop);
      }
 }
@@ -80,21 +88,35 @@ function keyUpListener(event) {
      keyPresses[event.key] = false;
 }
 
-function drawFrame(image, largeur, frameX, frameY,canvasY){
+function drawFrame(image, largeur, frameX, frameY, canvasY) {
      ctx.drawImage(image, frameX * largeur, frameY * HEIGHT, largeur, HEIGHT, /*canvas*/x, canvasY, SCALE * largeur, SCALED_HEIGHT);
 }
 
 loadImage();
 
+// function drawRect() {
+
+//      let dm = 100;
+//      let dp = -100;
+//      ctx.beginPath();
+//      ctx.fillStyle = "black";
+//      ctx.strokeRect(290, 0, 70, 200);
+//      ctx.fillStyle = "green";
+//      ctx.fillRect(300, 0, 50, 200);
+//      ctx.fillStyle = "black";
+//      ctx.fillRect(dm, dp, 50, 50);
+//      ctx.closePath();
+// }
+
 function gameLoop(timestamp) {
-     if(timestamp > time + time_framerate) {
+     if (timestamp > time + time_framerate) {
           time = timestamp;
 
           ctx.clearRect(0, 0, canvas.width, canvas.height);
 
           let hasMoved = false;
-          let forward = true; 
-          let sprint = false;
+          let forward = true;
+          let animation = true;
 
           if (keyPresses.a) {
                x -= 10;
@@ -104,85 +126,72 @@ function gameLoop(timestamp) {
                x += 10;
                hasMoved = true;
                forward = true;
-          } else if (keyPresses.Shift){
-               sprint = true;
-               hasMoved = true;
-               x += 25;
           }
-          // animation de marche vers l'avant
-          if (hasMoved && forward && !sprint) {
-               if (currentLoopIndex >= subWalkingingLoop.length) {
+
+          if (hasMoved && forward) {
+               currentLoopIndex++;
+               if (currentLoopIndex >= subIdleLoop.length) {
                     currentLoopIndex = 0;
                }
-               drawFrame(subWalking,48,subWalkingingLoop[currentLoopIndex], 0, 0);
-               currentLoopIndex++;
-               
-          }else if (hasMoved && forward && sprint){ // animation de sprint vers l'avant
-               if (currentLoopIndex >= subRunLoop.length) {
-                    currentLoopIndex = 0;
-               }
-               drawFrame(subRun,48,subRunLoop[currentLoopIndex], 0, 0);    
-               currentLoopIndex++;
-          }
-          
-          // animation de marche vers l'arriere 
-          if (hasMoved && !forward) {
-               if (currentLoopIndex == 0){
+               drawFrame(subWalking, 48, subWalkingingLoop[currentLoopIndex], 0, 0);
+          } if (hasMoved && !forward) {
+               if (currentLoopIndex == 0) {
                     currentLoopIndex = 7;
                }
                currentLoopIndex--;
-               drawFrame(subWalking,48,subWalkingingLoop[currentLoopIndex], 0, 0);
-          }
-          // animation d'idle
-          if (!hasMoved) {
+               drawFrame(subWalking, 48, subWalkingingLoop[currentLoopIndex], 0, 0);
+          } if (!hasMoved) {
+               currentLoopIndex++;
                if (currentLoopIndex >= subRunLoop.length) {
                     currentLoopIndex = 0;
                }
-               drawFrame(subIdle, 48,subIdleLoop[currentLoopIndex], 0 , 0 );
-               currentLoopIndex++;
-          }
-          // coup de pied
-          if (keyPresses.k){
-               for (currentLoopIndex = 0;currentLoopIndex <= 4; currentLoopIndex++){
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    drawFrame(subKick, 80,subKickLoop[currentLoopIndex], 0 , 0 );
-               }
-          }
-          // jab 
-          if (keyPresses.p){
-               for (currentLoopIndex = 0;currentLoopIndex <= 2; currentLoopIndex++){
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    drawFrame(subOneTwo, 64,subOneTwoLoop[currentLoopIndex], 0 , 0 );
-               }
-          }
-          //straight
-          if (keyPresses.o){
-               for (currentLoopIndex = 2;currentLoopIndex <= 5; currentLoopIndex++){
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    drawFrame(subOneTwo, 64,subOneTwoLoop[currentLoopIndex], 0 , 0 );
-               }
-          }     
-
-          //blesse
-          if (keyPresses.m){
-               for (currentLoopIndex = 0;currentLoopIndex <= 4; currentLoopIndex++){
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    drawFrame(subHurt, 96,subHurtLoop[currentLoopIndex], 0 , 0 );
-               }
+               drawFrame(subIdle, 48, subIdleLoop[currentLoopIndex], 0, 0);
           }
 
-          if (keyPresses.g){
-               
-               if (currentLoopIndex >= subKamehaLoop.length) {
-                    currentLoopIndex = 0;
+
+          // if (keyPresses.z) {
+          //      let s;
+          //      s = s+10;
+          //      ctx.fillStyle = "black";
+          //      ctx.fillRect(s,0,10,10);
+          // }
+
+          if (keyPresses.k) {
+               for (currentLoopIndex = 0; currentLoopIndex <= 4; currentLoopIndex++) {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    drawFrame(subKick, 80, subKickLoop[currentLoopIndex], 0, 0);
+
+            
+                    // drawRect();
+                    // m += dm;
+                    // p += dp; 
+                    // let subCollision = { x: currentLoopIndex[5], y: 0, width: 80, height: 112 };
+                    // let rectCollision = { x: 290, y: 0, width: 120, height: 112 };
+                    // if (currentLoopIndex == 5) {
+                    //      if (subCollision.x < rectCollision.x + rectCollision.width
+                    //           && subCollision.y < rectCollision.y + rectCollision.height) {
+                    //           console.log("putain");
+                    //           console.log("10 PV enlever");
+                    //      }
+                    // }
                }
-               //ctx.clearRect(0, 0, canvas.width, canvas.height);
-               //drawFrame(kanoKameha, 64,kanoKamehaLoop[currentLoopIndex], 0 , 0 );
-               drawFrame(subKameha, 112,subKamehaLoop[currentLoopIndex], 0 , 0 );
-               ctx.clearRect(0, 0, canvas.width, canvas.height);
-               drawFrame(subKameha, 112,subKamehaLoop[currentLoopIndex], 0 , 0 );
-               currentLoopIndex++;
+
+
+
           }
+
+
+
+
+
      }
      window.requestAnimationFrame(gameLoop);
 }
+
+// function subCollison() {
+
+
+// }
+
+
+// window.requestAnimationFrame(subCollison);
