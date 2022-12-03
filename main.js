@@ -1,8 +1,22 @@
-//var SAT = require('sat');
-// import SAT from '../src/SAT.js';
+var V = SAT.Vector;
+var P = SAT.Polygon;
+
+// A square
+var polygon1 = new P(new V(0,0), [
+  new V(0,0), new V(40,0), new V(40,40), new V(0,40)
+]);
+// A triangle
+var polygon2 = new P(new V(30,0), [
+  new V(0,0), new V(30, 0), new V(0, 30)
+]);
+var response = new SAT.Response();
+var collided = SAT.testPolygonPolygon(polygon1, polygon2, response);
+console.log(collided); // true
+
+
+
 let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
-
 ctx.imageSmoothingEnabled = false;
 
 const SCALE = 2;
@@ -44,16 +58,6 @@ let kanoWalking = new Image();
 
 var time = 0;
 var time_framerate = 100; //in milliseconds'
-
-var V = SAT.Vector; // SubZero
-var B = SAT.Box; // Kano
-
-var box1 = new B(new V(0, 0), 100, 100).toPolygon();
-var box2 = new B(new V(0, 0), 100, 100).toPolygon();
-var response = new SAT.Response();
-var collided = SAT.testPolygonPolygon(box1, box2,response);
-console.log(collided);
-
 function loadImage() {
 
      subHurt.src = "/src/SubZero/Sub_hurt.png"
