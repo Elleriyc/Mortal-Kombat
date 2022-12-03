@@ -41,7 +41,7 @@ let kanoRun = new Image();
 let kanoWalking = new Image();
 
 var time = 0;
-var time_framerate = 100; //in milliseconds'
+var time_framerate = 110; //in milliseconds'
 
 function loadImage() {
 
@@ -91,7 +91,6 @@ function gameLoop(timestamp) {
 
           let hasMoved = false;
           let forward = true;
-          let animation = true;
 
           if (keyPresses.a) {
                x -= 10;
@@ -132,7 +131,28 @@ function gameLoop(timestamp) {
                     drawFrame(subKick, 80,subKickLoop[currentLoopIndex], 0 , 0 );
                }
           }
-     
+          // jab 
+          if (keyPresses.p){
+               for (currentLoopIndex = 0;currentLoopIndex <= 2; currentLoopIndex++){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    drawFrame(subOneTwo, 64,subOneTwoLoop[currentLoopIndex], 0 , 0 );
+               }
+          }
+          //straight
+          if (keyPresses.o){
+               for (currentLoopIndex = 2;currentLoopIndex <= 5; currentLoopIndex++){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    drawFrame(subOneTwo, 64,subOneTwoLoop[currentLoopIndex], 0 , 0 );
+               }
+          }     
+
+          //blesse
+          if (keyPresses.m){
+               for (currentLoopIndex = 0;currentLoopIndex <= 4; currentLoopIndex++){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    drawFrame(subHurt, 96,subHurtLoop[currentLoopIndex], 0 , 0 );
+               }
+          }
      }
      window.requestAnimationFrame(gameLoop);
 }
