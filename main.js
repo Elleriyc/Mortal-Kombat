@@ -9,11 +9,14 @@ const SCALED_HEIGHT = SCALE * HEIGHT;
 
 const subHurtLoop = [0,1,2,3,4];
 const subIdleLoop = [0,1,2,3,4,5,6,7];
-const subKamehaLoop = Array.from(Array(13).keys())
+const subKamehaLoop = [0,1,2,3,4,5,6,7,8,9,10,11,12,13];//Array.from(Array(13).keys())
 const subKickLoop = [0,1,2,3,4];
 const subOneTwoLoop = [0,1,2,3,4,5];
 const subRunLoop = [0,1,2,3,4,5];
 const subWalkingingLoop = [0,1,2,3,4,5,6,7];
+
+
+const kanoKamehaLoop = Array.from(Array(20).keys())
 
 let keyPresses = {};
 let currentLoopIndex = 0;
@@ -41,7 +44,7 @@ let kanoRun = new Image();
 let kanoWalking = new Image();
 
 var time = 0;
-var time_framerate = 110; //in milliseconds'
+var time_framerate = 1000; //in milliseconds'
 
 function loadImage() {
 
@@ -90,7 +93,8 @@ function gameLoop(timestamp) {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
 
           let hasMoved = false;
-          let forward = true;
+          let forward = true; 
+          let sprint = false;
 
           if (keyPresses.a) {
                x -= 10;
@@ -100,15 +104,28 @@ function gameLoop(timestamp) {
                x += 10;
                hasMoved = true;
                forward = true;
-          } 
-          // animation de marche en avant
-          if (hasMoved && forward) {
-               currentLoopIndex++;
-               if (currentLoopIndex >= subIdleLoop.length) {
+          } else if (keyPresses.Shift){
+               sprint = true;
+               hasMoved = true;
+               x += 25;
+          }
+          // animation de marche vers l'avant
+          if (hasMoved && forward && !sprint) {
+               if (currentLoopIndex >= subWalkingingLoop.length) {
                     currentLoopIndex = 0;
                }
                drawFrame(subWalking,48,subWalkingingLoop[currentLoopIndex], 0, 0);
-          }// animation de marche en arriere 
+               currentLoopIndex++;
+               
+          }else if (hasMoved && forward && sprint){ // animation de sprint vers l'avant
+               if (currentLoopIndex >= subRunLoop.length) {
+                    currentLoopIndex = 0;
+               }
+               drawFrame(subRun,48,subRunLoop[currentLoopIndex], 0, 0);    
+               currentLoopIndex++;
+          }
+          
+          // animation de marche vers l'arriere 
           if (hasMoved && !forward) {
                if (currentLoopIndex == 0){
                     currentLoopIndex = 7;
@@ -118,11 +135,11 @@ function gameLoop(timestamp) {
           }
           // animation d'idle
           if (!hasMoved) {
-               currentLoopIndex++;
                if (currentLoopIndex >= subRunLoop.length) {
                     currentLoopIndex = 0;
                }
                drawFrame(subIdle, 48,subIdleLoop[currentLoopIndex], 0 , 0 );
+               currentLoopIndex++;
           }
           // coup de pied
           if (keyPresses.k){
@@ -152,6 +169,19 @@ function gameLoop(timestamp) {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     drawFrame(subHurt, 96,subHurtLoop[currentLoopIndex], 0 , 0 );
                }
+          }
+
+          if (keyPresses.g){
+               
+               if (currentLoopIndex >= subKamehaLoop.length) {
+                    currentLoopIndex = 0;
+               }
+               //ctx.clearRect(0, 0, canvas.width, canvas.height);
+               //drawFrame(kanoKameha, 64,kanoKamehaLoop[currentLoopIndex], 0 , 0 );
+               drawFrame(subKameha, 112,subKamehaLoop[currentLoopIndex], 0 , 0 );
+               ctx.clearRect(0, 0, canvas.width, canvas.height);
+               drawFrame(subKameha, 112,subKamehaLoop[currentLoopIndex], 0 , 0 );
+               currentLoopIndex++;
           }
      }
      window.requestAnimationFrame(gameLoop);
