@@ -1,19 +1,16 @@
+//import {"main.js"};
 function launch() {
     let btnStart = document.getElementById("btn");
     btnStart.onclick = function() {
-        console.log("Lancer ! "); 
+        
         
     }
 }
 
-function drawMenu() 
-{
 
-}
 
 function update() 
 {
-    drawMenu();
     launch();
 }
 

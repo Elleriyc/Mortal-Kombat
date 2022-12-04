@@ -93,27 +93,61 @@ let sub_damaged = true;
 let kano_damaged = false;
 let freezed = true;
 
+    //let createSubBox = new SAT.Box(new SAT.Vector(x, 0), 80, 112).toPolygon();
+    //let createKanoBox = new SAT.Box(new SAT.Vector(300, 0), 80, 112).toPolygon();
+    //let collided = SAT.testPolygonPolygon(createSubBox, createKanoBox);
+    //console.log(collided);
+// function collision () {
+//      let createSubBox = new SAT.Box(new SAT.Vector(pos_sub, 200), 80, 112).toPolygon();
+//      let createKanoBox = new SAT.Box(new SAT.Vector(pos_kano, 200), 80, 112).toPolygon();
+//      let collided = SAT.testPolygonPolygon(createSubBox, createKanoBox);
+//      //console.log(collided);
+//      //return collided;
+// }
 
+function takeDamage(){
+     if (kano_damaged == true) {
+          kano_damaged = false;
+          console.log("Kano take damage");
+     }
+     if (sub_damaged == true) {
+          sub_damaged = false;
+          console.log("SubZero take damage");
+     }
+}
+
+function barreDeVie() {
+     ctx.fillStyle = "red";
+     ctx.fillRect(0, 0, 100, 10);
+     ctx.fillStyle = "blue";
+     ctx.fillRect(0, 0, 100, 10);
+}
+
+//let createSubBox = new SAT.Box(new SAT.Vector(pos_sub, 0), 80, 112).toPolygon();
 function animationsSubzero(){
+     //collision();
+     takeDamage();
+     
      //animation de marche
      let hasMoved = false;
      let forward = true; 
      let sprint = false;
-     
-     
 
      if (keyPresses.a) {
           pos_sub -= 10;
           hasMoved = true;
           forward = false;
+          //console.log(createSubBox);
      } else if (keyPresses.d) {
           pos_sub += 10;
           hasMoved = true;
           forward = true;
+          //dconsole.log(createSubBox);
      } else if (keyPresses.Shift){
           sprint = true;
           hasMoved = true;
           pos_sub += 25;
+          //console.log(createSubBox);
      } else if (keyPresses.e){
           kick_sub = true;
           currentLoopIndexSub = 0;
@@ -123,6 +157,7 @@ function animationsSubzero(){
      } else if(keyPresses.t){
           kameha_sub = true;
           currentLoopIndexSub = 0;
+
      }
 
 
@@ -193,9 +228,10 @@ function animationsSubzero(){
           currentLoopIndexSub++;
      }
 }
-     
+//let createKanoBox = new SAT.Box(new SAT.Vector(pos_kano, 0), 80, 112).toPolygon();    
 
 function animationsKano(){
+     //collision();
      //animation de marche
      let k_hasMoved = false;
      let forward = true; 
@@ -301,13 +337,18 @@ function animationsKano(){
           currentLoopIndexKano++;
      }
 }
+//let collided = SAT.testPolygonPolygon(createSubBox, createKanoBox);
+  
 
 function update(){
-
+  
      ctx.clearRect(0, 0, canvas.width, canvas.height);
-     
+     barreDeVie();
      animationsSubzero();
      animationsKano();
      
+     //collision();
+     //console.log(collided, "collision");
+   
 }
 setInterval(update, 100);
